@@ -1,1 +1,1 @@
-web: bin/inside-goal-backend --port=$PORT --no-browser
+web: bin/inside-goal-backend
