@@ -1,1 +1,1 @@
-web: go run cmd/inside-goal/main.go
+web: bin/inside-goal-backend

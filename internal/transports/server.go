@@ -10,8 +10,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/service"
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/storage"
+	"github.com/jrodolforojas/inside-goal-backend/internal/service"
+	"github.com/jrodolforojas/inside-goal-backend/internal/storage"
 )
 
 // WebServer has the logic to start the microservice

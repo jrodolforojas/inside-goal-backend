@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/models"
+	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
 

@@ -1,4 +1,4 @@
-module github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api
+module github.com/jrodolforojas/inside-goal-backend
 
 go 1.16
 
@@ -9,5 +9,5 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354 // indirect
-	golang.org/x/net v0.0.0-20220706163947-c90051bbdb60 // indirect
+	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
 )

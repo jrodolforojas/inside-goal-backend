@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/models"
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/storage"
+	"github.com/jrodolforojas/inside-goal-backend/internal/models"
+	"github.com/jrodolforojas/inside-goal-backend/internal/storage"
 )
 
 type Feed struct {

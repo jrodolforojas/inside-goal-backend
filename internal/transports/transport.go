@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Rviewer-Challenges/4TOWna2EWttcHFagNbUw/api/internal/service"
+	"github.com/jrodolforojas/inside-goal-backend/internal/service"
 	"github.com/gorilla/mux"
 	httptransport "github.com/go-kit/kit/transport/http"
 )
