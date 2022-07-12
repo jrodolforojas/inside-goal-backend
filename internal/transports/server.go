@@ -22,7 +22,6 @@ type WebServer struct {
 func (ws *WebServer) StartServer() {
 
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		port = "8081"
 	}

@@ -127,10 +127,15 @@ func (storage *Storage) GetNewsMarca(notices *[]models.Notice) error {
 			media = item.Enclosures[0].URL
 		}
 
+		var description string
+		if len(item.Extensions["media"]["description"]) > 0 {
+			description = item.Extensions["media"]["description"][0].Value
+		}
+
 		notice := models.Notice{
 			Title:           item.Title,
 			Author:          author,
-			Description:     item.Description,
+			Description:     description,
 			Link:            item.Link,
 			Categories:      categories,
 			PublicationDate: item.Published,

@@ -1,1 +1,1 @@
-web: bin/inside-goal-backend
+web: cmd/inside-goal-backend/bin/inside-goal-backend
