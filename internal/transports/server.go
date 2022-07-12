@@ -11,7 +11,6 @@ import (
 	"syscall"
 
 	"github.com/jrodolforojas/inside-goal-backend/internal/service"
-	"github.com/jrodolforojas/inside-goal-backend/internal/storage"
 )
 
 // WebServer has the logic to start the microservice
@@ -31,12 +30,7 @@ func (ws *WebServer) StartServer() {
 
 	ctx := context.Background()
 
-	storage, err := storage.New()
-	if err != nil {
-		log.Fatal("error creating the storage instance", err)
-	}
-
-	service := service.New(storage)
+	service := service.New()
 
 	errs := make(chan error)
 

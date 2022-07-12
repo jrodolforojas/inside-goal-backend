@@ -3,7 +3,7 @@ package models
 type Notice struct {
 	Title           string
 	Author          string
-	Provider        Provider
+	ProviderID      int64
 	Description     string
 	PublicationDate string
 	Categories      []string
@@ -11,7 +11,3 @@ type Notice struct {
 	Link            string
 }
 
-type Provider struct {
-	Id   int64
-	Name string
-}

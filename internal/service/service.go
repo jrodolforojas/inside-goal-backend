@@ -8,13 +8,10 @@ import (
 )
 
 type Feed struct {
-	News *storage.Storage
 }
 
-func New(storage *storage.Storage) *Feed {
-	return &Feed{
-		News: storage,
-	}
+func New() *Feed {
+	return &Feed{}
 }
 
 func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
@@ -23,7 +20,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	errc := make(chan error, 8)
 
 	go func() {
-		err := feed.News.GetNewsESPN(&notices)
+		espn := storage.NewESPN()
+		err := espn.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -33,7 +31,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNewsDiarioAS(&notices)
+		diarioAS := storage.NewDiarioAS()
+		err := diarioAS.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -43,7 +42,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNewsMarca(&notices)
+		marca := storage.NewMarca()
+		err := marca.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -53,7 +53,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNewsNYTimes(&notices)
+		nyTimes := storage.NewNYTimes()
+		err := nyTimes.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -63,7 +64,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNewsFoxSports(&notices)
+		foxSports := storage.NewFoxSports()
+		err := foxSports.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -73,7 +75,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNewsYahoo(&notices)
+		yahooSports := storage.NewYahooSports()
+		err := yahooSports.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -83,7 +86,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.GetNews101GreatGoals(&notices)
+		greatGoals101 := storage.NewGreatGoals101()
+		err := greatGoals101.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
@@ -93,7 +97,8 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	go func() {
-		err := feed.News.Get90Min(&notices)
+		ninetyMin := storage.NewNinetyMin()
+		err := ninetyMin.GetNews(&notices)
 		if err != nil {
 			errc <- err
 			return
