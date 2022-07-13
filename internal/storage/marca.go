@@ -34,8 +34,8 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 		categories = append(categories, item.Categories...)
 
 		var media string
-		if len(item.Enclosures) > 0 {
-			media = item.Enclosures[0].URL
+		if len(item.Extensions["media"]["content"]) > 0 {
+			media = item.Extensions["media"]["content"][0].Attrs["url"]
 		}
 
 		var description string
