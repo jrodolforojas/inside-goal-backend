@@ -7,9 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jrodolforojas/inside-goal-backend/internal/service"
-	"github.com/gorilla/mux"
 	httptransport "github.com/go-kit/kit/transport/http"
+	"github.com/gorilla/mux"
+	"github.com/jrodolforojas/inside-goal-backend/internal/middleware"
+	"github.com/jrodolforojas/inside-goal-backend/internal/service"
 )
 
 type errorer interface {
@@ -21,8 +22,14 @@ func MakeHTTPHandler(ctx context.Context, s *service.Feed) http.Handler {
 	router := mux.NewRouter()
 	endpoints := service.MakeServerEndpoints(s)
 
-	// GET		/orders/{id}	get an order by ID Order
-	router.Methods("GET").Path("/news").Handler(httptransport.NewServer(
+	subRouter := router.PathPrefix("/api").Subrouter()
+	router = router.PathPrefix("/").Subrouter()
+
+	corsMethods := []string{http.MethodOptions, http.MethodGet}
+	router.Use(middleware.CORSPolicies(corsMethods))
+	subRouter.Use(middleware.CORSPolicies(corsMethods))
+
+	router.Methods(http.MethodGet).Path("/news").Handler(httptransport.NewServer(
 		endpoints.GetNews,
 		decodeGetNewsRequest,
 		encodeResponse,
