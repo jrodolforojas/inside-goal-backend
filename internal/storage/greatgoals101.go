@@ -6,16 +6,18 @@ import (
 )
 
 type GreatGoals101 struct {
-	id      int64
-	name    string
-	feedURL string
+	id           int64
+	name         string
+	feedURL      string
+	defaultImage string
 }
 
 func NewGreatGoals101() *GreatGoals101 {
 	return &GreatGoals101{
-		id:      int64(GREAT_GOALS_101_ID),
-		name:    "101 Great Goals",
-		feedURL: "https://www.101greatgoals.com/feed/",
+		id:           int64(GREAT_GOALS_101_ID),
+		name:         "101 Great Goals",
+		feedURL:      "https://www.101greatgoals.com/feed/",
+		defaultImage: "https://www.101greatgoals.com/wp-content/uploads/2022/02/101GG-logo.jpg",
 	}
 }
 
@@ -36,6 +38,7 @@ func (greatGoals101 *GreatGoals101) GetNews(notices *[]models.Notice) error {
 			Author:          author,
 			Description:     item.Description,
 			ProviderID:      greatGoals101.id,
+			Media:           greatGoals101.defaultImage,
 		}
 
 		*notices = append(*notices, notice)

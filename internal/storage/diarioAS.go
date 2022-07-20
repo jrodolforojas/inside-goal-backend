@@ -6,16 +6,18 @@ import (
 )
 
 type DiarioASStorage struct {
-	id      int64
-	name    string
-	feedURL string
+	id           int64
+	name         string
+	feedURL      string
+	defaultImage string
 }
 
 func NewDiarioAS() *DiarioASStorage {
 	return &DiarioASStorage{
-		id:      int64(DIARIOAS_ID),
-		name:    "Diario AS",
-		feedURL: "https://as.com/rss/futbol/mundial.xml",
+		id:           int64(DIARIOAS_ID),
+		name:         "Diario AS",
+		feedURL:      "https://as.com/rss/futbol/mundial.xml",
+		defaultImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Diario_AS.svg/1200px-Diario_AS.svg.png",
 	}
 }
 
@@ -36,6 +38,10 @@ func (diarioAS *DiarioASStorage) GetNews(notices *[]models.Notice) error {
 		var media string
 		if len(item.Enclosures) > 0 {
 			media = item.Enclosures[0].URL
+		}
+
+		if media == "" {
+			media = diarioAS.defaultImage
 		}
 
 		notice := models.Notice{

@@ -6,16 +6,18 @@ import (
 )
 
 type Marca struct {
-	id      int64
-	name    string
-	feedURL string
+	id           int64
+	name         string
+	feedURL      string
+	defaultImage string
 }
 
 func NewMarca() *Marca {
 	return &Marca{
-		id:      int64(MARCA_ID),
-		name:    "Marca",
-		feedURL: "https://e00-marca.uecdn.es/rss/futbol/futbol-internacional.xml",
+		id:           int64(MARCA_ID),
+		name:         "Marca",
+		feedURL:      "https://e00-marca.uecdn.es/rss/futbol/futbol-internacional.xml",
+		defaultImage: "https://e00-marca.uecdn.es/assets/v27/img/destacadas/marca__logo-generica.jpg",
 	}
 }
 
@@ -41,6 +43,10 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 		var description string
 		if len(item.Extensions["media"]["description"]) > 0 {
 			description = item.Extensions["media"]["description"][0].Value
+		}
+
+		if media == "" {
+			media = marca.defaultImage
 		}
 
 		notice := models.Notice{

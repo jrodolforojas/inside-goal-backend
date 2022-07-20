@@ -6,16 +6,18 @@ import (
 )
 
 type YahooSports struct {
-	id      int64
-	name    string
-	feedURL string
+	id           int64
+	name         string
+	feedURL      string
+	defaultImage string
 }
 
 func NewYahooSports() *YahooSports {
 	return &YahooSports{
-		id:      int64(YAHOO_SPORTS_ID),
-		name:    "Yahoo Sports",
-		feedURL: "https://sports.yahoo.com/soccer/rss/",
+		id:           int64(YAHOO_SPORTS_ID),
+		name:         "Yahoo Sports",
+		feedURL:      "https://sports.yahoo.com/soccer/rss/",
+		defaultImage: "https://1000marcas.net/wp-content/uploads/2020/01/Yahoo-logo-1.png",
 	}
 }
 
@@ -40,6 +42,7 @@ func (yahooSports *YahooSports) GetNews(notices *[]models.Notice) error {
 			Link:            item.Link,
 			Categories:      categories,
 			ProviderID:      yahooSports.id,
+			Media:           yahooSports.defaultImage,
 		}
 
 		*notices = append(*notices, notice)

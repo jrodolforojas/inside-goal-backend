@@ -6,16 +6,18 @@ import (
 )
 
 type NYTimes struct {
-	id      int64
-	name    string
-	feedURL string
+	id           int64
+	name         string
+	feedURL      string
+	defaultImage string
 }
 
 func NewNYTimes() *NYTimes {
 	return &NYTimes{
-		id:      int64(NYTIMES_ID),
-		name:    "New York Times",
-		feedURL: "https://rss.nytimes.com/services/xml/rss/nyt/Soccer.xml",
+		id:           int64(NYTIMES_ID),
+		name:         "New York Times",
+		feedURL:      "https://rss.nytimes.com/services/xml/rss/nyt/Soccer.xml",
+		defaultImage: "https://nytco-assets.nytimes.com/2019/08/facebook-1200x630.png",
 	}
 }
 
@@ -36,6 +38,10 @@ func (nytimes *NYTimes) GetNews(notices *[]models.Notice) error {
 		var media string
 		if len(item.Extensions["media"]["content"]) > 0 {
 			media = item.Extensions["media"]["content"][0].Attrs["url"]
+		}
+
+		if media == "" {
+			media = nytimes.defaultImage
 		}
 
 		notice := models.Notice{
