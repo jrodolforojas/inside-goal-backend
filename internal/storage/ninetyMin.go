@@ -35,10 +35,15 @@ func (ninetyMin *NinetyMin) GetNews(notices *[]models.Notice) error {
 			media = ninetyMin.defaultImage
 		}
 
+		author := "90 min"
+		if item.Author != nil {
+			author = item.Author.Name
+		}
+
 		notice := models.Notice{
 			Title:           item.Title,
 			Link:            item.Link,
-			Author:          item.Author.Name,
+			Author:          author,
 			Description:     item.Description,
 			PublicationDate: item.Published,
 			Media:           media,
