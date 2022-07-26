@@ -14,10 +14,12 @@ func New() *Feed {
 	return &Feed{}
 }
 
+const PROVIDERS = 7
+
 func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	notices := []models.Notice{}
 
-	errc := make(chan error, 8)
+	errc := make(chan error, PROVIDERS)
 
 	go func() {
 		espn := storage.NewESPN()
@@ -85,16 +87,16 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 		errc <- nil
 	}()
 
-	go func() {
-		greatGoals101 := storage.NewGreatGoals101()
-		err := greatGoals101.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
-		}
+	// go func() {
+	// 	greatGoals101 := storage.NewGreatGoals101()
+	// 	err := greatGoals101.GetNews(&notices)
+	// 	if err != nil {
+	// 		errc <- err
+	// 		return
+	// 	}
 
-		errc <- nil
-	}()
+	// 	errc <- nil
+	// }()
 
 	go func() {
 		ninetyMin := storage.NewNinetyMin()
@@ -108,7 +110,7 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}()
 
 	var err error
-	for i := 0; i < 8; i++ {
+	for i := 0; i < PROVIDERS; i++ {
 		e := <-errc
 		if e != nil {
 			err = e
