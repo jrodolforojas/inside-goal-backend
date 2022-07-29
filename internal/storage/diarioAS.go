@@ -59,3 +59,12 @@ func (diarioAS *DiarioASStorage) GetNews(notices *[]models.Notice) error {
 	}
 	return nil
 }
+
+func (diarioAS *DiarioASStorage) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           diarioAS.id,
+		Name:         diarioAS.name,
+		FeedURL:      diarioAS.feedURL,
+		DefaultImage: diarioAS.defaultImage,
+	}, nil
+}

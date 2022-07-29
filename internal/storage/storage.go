@@ -5,7 +5,7 @@ import "github.com/jrodolforojas/inside-goal-backend/internal/models"
 type ID int64
 
 const (
-	ESPN_ID ID = (iota+1)
+	ESPN_ID ID = (iota + 1)
 	DIARIOAS_ID
 	MARCA_ID
 	NYTIMES_ID
@@ -17,4 +17,5 @@ const (
 
 type Storage interface {
 	GetNews(notices *[]models.Notice) error
+	GetProvider() (*models.Provider, error)
 }

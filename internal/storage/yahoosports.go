@@ -49,3 +49,12 @@ func (yahooSports *YahooSports) GetNews(notices *[]models.Notice) error {
 	}
 	return nil
 }
+
+func (yahooSports *YahooSports) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           yahooSports.id,
+		Name:         yahooSports.name,
+		FeedURL:      yahooSports.feedURL,
+		DefaultImage: yahooSports.defaultImage,
+	}, nil
+}

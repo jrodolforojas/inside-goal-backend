@@ -3,17 +3,19 @@ package service
 import (
 	"context"
 
-	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 )
 
 type Endpoints struct {
-	GetNews endpoint.Endpoint
+	GetNews      endpoint.Endpoint
+	GetProviders endpoint.Endpoint
 }
 
 func MakeServerEndpoints(service *Feed) Endpoints {
 	return Endpoints{
-		GetNews: makeGetNewsEndpoint(service),
+		GetNews:      makeGetNewsEndpoint(service),
+		GetProviders: makeGetProvidersEndpoint(service),
 	}
 }
 
@@ -28,8 +30,7 @@ func makeGetNewsEndpoint(service *Feed) endpoint.Endpoint {
 	}
 }
 
-type GetNewsRequest struct{
-	
+type GetNewsRequest struct {
 }
 
 // GetNewsResponse struct
@@ -39,3 +40,25 @@ type GetNewsResponse struct {
 }
 
 func (r GetNewsResponse) Error() error { return r.Err }
+
+func makeGetProvidersEndpoint(service *Feed) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		providers, err := service.GetProviders(ctx)
+
+		if err != nil {
+			return GetProvidersResponse{Providers: nil, Err: err}, err
+		}
+		return GetProvidersResponse{Providers: providers, Err: err}, nil
+	}
+}
+
+type GetProvidersRequest struct {
+}
+
+// GetProvidersResponse struct
+type GetProvidersResponse struct {
+	Providers []models.Provider `json:"providers,omitempty"`
+	Err       error             `json:"err,omitempty"`
+}
+
+func (r GetProvidersResponse) Error() error { return r.Err }

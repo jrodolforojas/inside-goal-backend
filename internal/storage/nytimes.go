@@ -60,3 +60,12 @@ func (nytimes *NYTimes) GetNews(notices *[]models.Notice) error {
 
 	return nil
 }
+
+func (nytimes *NYTimes) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           nytimes.id,
+		Name:         nytimes.name,
+		FeedURL:      nytimes.feedURL,
+		DefaultImage: nytimes.defaultImage,
+	}, nil
+}

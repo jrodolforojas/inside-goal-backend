@@ -87,17 +87,6 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 		errc <- nil
 	}()
 
-	// go func() {
-	// 	greatGoals101 := storage.NewGreatGoals101()
-	// 	err := greatGoals101.GetNews(&notices)
-	// 	if err != nil {
-	// 		errc <- err
-	// 		return
-	// 	}
-
-	// 	errc <- nil
-	// }()
-
 	go func() {
 		ninetyMin := storage.NewNinetyMin()
 		err := ninetyMin.GetNews(&notices)
@@ -122,4 +111,38 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	}
 
 	return notices, nil
+}
+
+func (feed *Feed) GetProviders(ctx context.Context) ([]models.Provider, error) {
+	providers := []models.Provider{}
+
+	espn := storage.NewESPN()
+	espnProvider, _ := espn.GetProvider()
+	providers = append(providers, *espnProvider)
+
+	diarioAS := storage.NewDiarioAS()
+	diarioASProvider, _ := diarioAS.GetProvider()
+	providers = append(providers, *diarioASProvider)
+
+	marca := storage.NewMarca()
+	marcaProvider, _ := marca.GetProvider()
+	providers = append(providers, *marcaProvider)
+
+	nyTimes := storage.NewNYTimes()
+	nyTimesProvider, _ := nyTimes.GetProvider()
+	providers = append(providers, *nyTimesProvider)
+
+	foxsports := storage.NewFoxSports()
+	foxsportsProvider, _ := foxsports.GetProvider()
+	providers = append(providers, *foxsportsProvider)
+
+	yahooSports := storage.NewYahooSports()
+	yahooSportsProvider, _ := yahooSports.GetProvider()
+	providers = append(providers, *yahooSportsProvider)
+
+	ninetyMin := storage.NewNinetyMin()
+	ninetyMinProvider, _ := ninetyMin.GetProvider()
+	providers = append(providers, *ninetyMinProvider)
+
+	return providers, nil
 }

@@ -54,3 +54,12 @@ func (foxSports *FoxSports) GetNews(notices *[]models.Notice) error {
 	}
 	return nil
 }
+
+func (foxSports *FoxSports) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           foxSports.id,
+		Name:         foxSports.name,
+		FeedURL:      foxSports.feedURL,
+		DefaultImage: foxSports.defaultImage,
+	}, nil
+}

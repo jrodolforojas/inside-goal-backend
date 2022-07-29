@@ -51,3 +51,12 @@ func (espn *ESPNStorage) GetNews(notices *[]models.Notice) error {
 
 	return nil
 }
+
+func (espn *ESPNStorage) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           espn.id,
+		Name:         espn.name,
+		FeedURL:      espn.feedURL,
+		DefaultImage: espn.defaultImage,
+	}, nil
+}

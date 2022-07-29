@@ -64,3 +64,12 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 	}
 	return nil
 }
+
+func (marca *Marca) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           marca.id,
+		Name:         marca.name,
+		FeedURL:      marca.feedURL,
+		DefaultImage: marca.defaultImage,
+	}, nil
+}

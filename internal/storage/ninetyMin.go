@@ -55,3 +55,12 @@ func (ninetyMin *NinetyMin) GetNews(notices *[]models.Notice) error {
 
 	return nil
 }
+
+func (ninetyMin *NinetyMin) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           ninetyMin.id,
+		Name:         ninetyMin.name,
+		FeedURL:      ninetyMin.feedURL,
+		DefaultImage: ninetyMin.defaultImage,
+	}, nil
+}

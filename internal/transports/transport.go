@@ -35,11 +35,22 @@ func MakeHTTPHandler(ctx context.Context, s *service.Feed) http.Handler {
 		encodeResponse,
 	))
 
+	router.Methods(http.MethodGet).Path("/providers").Handler(httptransport.NewServer(
+		endpoints.GetProviders,
+		decodeGetProvidersRequest,
+		encodeResponse,
+	))
+
 	return router
 }
 
 func decodeGetNewsRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
 	var req service.GetNewsRequest
+	return req, nil
+}
+
+func decodeGetProvidersRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
+	var req service.GetProvidersRequest
 	return req, nil
 }
 

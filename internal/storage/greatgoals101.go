@@ -45,3 +45,12 @@ func (greatGoals101 *GreatGoals101) GetNews(notices *[]models.Notice) error {
 	}
 	return nil
 }
+
+func (greatGoals101 *GreatGoals101) GetProvider() (*models.Provider, error) {
+	return &models.Provider{
+		ID:           greatGoals101.id,
+		Name:         greatGoals101.name,
+		FeedURL:      greatGoals101.feedURL,
+		DefaultImage: greatGoals101.defaultImage,
+	}, nil
+}
