@@ -16,7 +16,7 @@ const (
 	AllowedHeaders     = "Origin, Referer, Accept, Accept-Encoding, Accept-Language, x-requested-with, Content-Type, Content-Length, Authorization"
 )
 
-var AllowedOrigins = []string{"https://inside-goal-backend.herokuapp.com", "localhost"}
+var AllowedOrigins = []string{"https://inside-goal-backend.herokuapp.com", "https://inside-goal.vercel.app/", "localhost"}
 
 func CORSPolicies(allMethods []string) mux.MiddlewareFunc {
 	return func(h http.Handler) http.Handler {
