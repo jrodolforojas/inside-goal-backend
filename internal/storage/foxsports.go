@@ -44,7 +44,7 @@ func (foxSports *FoxSports) GetNews(notices *[]models.Notice) error {
 			Link:            item.Link,
 			Categories:      categories,
 			Description:     item.Description,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Media:           media,
 			Author:          "Fox Sports",
 			ProviderID:      foxSports.id,

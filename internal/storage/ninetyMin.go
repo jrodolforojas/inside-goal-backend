@@ -45,7 +45,7 @@ func (ninetyMin *NinetyMin) GetNews(notices *[]models.Notice) error {
 			Link:            item.Link,
 			Author:          author,
 			Description:     item.Description,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Media:           media,
 			ProviderID:      ninetyMin.id,
 		}
