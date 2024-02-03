@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/jrodolforojas/inside-goal-backend/internal/configuration"
 	"github.com/jrodolforojas/inside-goal-backend/internal/service"
 )
 
@@ -19,12 +20,11 @@ type WebServer struct {
 
 // StartServer listens and servers this microservice
 func (ws *WebServer) StartServer() {
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8081"
+	config, err := configuration.Read()
+	if err != nil {
+		panic(err)
 	}
-	var httpAddr = flag.String("http", fmt.Sprintf(":%s", port), "http listen address")
+	var httpAddr = flag.String("http", fmt.Sprintf(":%s", config.Address.Port), "http listen address")
 
 	flag.Parse()
 
