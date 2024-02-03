@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
+	github.com/caarlos0/env v3.5.0+incompatible // indirect
 	github.com/go-kit/kit v0.12.0
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/gorilla/mux v1.8.0
