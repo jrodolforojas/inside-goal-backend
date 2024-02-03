@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"sort"
 
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/jrodolforojas/inside-goal-backend/internal/storage"
@@ -109,6 +110,11 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// order the notices by date
+	sort.Slice(notices, func(i, j int) bool {
+		return notices[i].PublicationDate.After(notices[j].PublicationDate)
+	})
 
 	return notices, nil
 }

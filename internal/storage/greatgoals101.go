@@ -34,7 +34,7 @@ func (greatGoals101 *GreatGoals101) GetNews(notices *[]models.Notice) error {
 		notice := models.Notice{
 			Title:           item.Title,
 			Link:            item.Link,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Author:          author,
 			Description:     item.Description,
 			ProviderID:      greatGoals101.id,

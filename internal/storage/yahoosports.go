@@ -38,7 +38,7 @@ func (yahooSports *YahooSports) GetNews(notices *[]models.Notice) error {
 			Title:           item.Title,
 			Author:          author,
 			Description:     item.Description,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Link:            item.Link,
 			Categories:      categories,
 			ProviderID:      yahooSports.id,

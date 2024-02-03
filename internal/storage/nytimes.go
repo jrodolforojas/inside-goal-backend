@@ -49,7 +49,7 @@ func (nytimes *NYTimes) GetNews(notices *[]models.Notice) error {
 			Link:            item.Link,
 			Description:     item.Description,
 			Author:          author,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Categories:      categories,
 			Media:           media,
 			ProviderID:      nytimes.id,

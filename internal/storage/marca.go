@@ -55,7 +55,7 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 			Description:     description,
 			Link:            item.Link,
 			Categories:      categories,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Media:           media,
 			ProviderID:      marca.id,
 		}

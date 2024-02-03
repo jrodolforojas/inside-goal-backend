@@ -41,7 +41,7 @@ func (espn *ESPNStorage) GetNews(notices *[]models.Notice) error {
 			ProviderID:      espn.id,
 			Title:           item.Title,
 			Link:            item.Link,
-			PublicationDate: item.Published,
+			PublicationDate: *item.PublishedParsed,
 			Author:          "ESPN",
 			Description:     item.Description,
 			Media:           media,
