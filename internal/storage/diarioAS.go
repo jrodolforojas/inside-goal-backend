@@ -16,7 +16,7 @@ func NewDiarioAS() *DiarioASStorage {
 	return &DiarioASStorage{
 		id:           int64(DIARIOAS_ID),
 		name:         "Diario AS",
-		feedURL:      "https://as.com/rss/futbol/mundial.xml",
+		feedURL:      "https://feeds.as.com/mrss-s/pages/as/site/as.com/section/futbol/portada/",
 		defaultImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Diario_AS.svg/1200px-Diario_AS.svg.png",
 	}
 }
