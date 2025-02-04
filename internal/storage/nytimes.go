@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,20 +12,24 @@ type NYTimes struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewNYTimes() *NYTimes {
+func NewNYTimes(mu *sync.Mutex) *NYTimes {
 	return &NYTimes{
 		id:           int64(NYTIMES_ID),
 		name:         "New York Times",
 		feedURL:      "https://rss.nytimes.com/services/xml/rss/nyt/Soccer.xml",
 		defaultImage: "https://nytco-assets.nytimes.com/2019/08/facebook-1200x630.png",
+		mu:           mu,
 	}
 }
 
 func (nytimes *NYTimes) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(nytimes.feedURL)
+
+	nyTimesNotices := []models.Notice{}
 
 	for _, item := range feed.Items {
 
@@ -55,8 +61,13 @@ func (nytimes *NYTimes) GetNews(notices *[]models.Notice) error {
 			ProviderID:      nytimes.id,
 		}
 
-		*notices = append(*notices, notice)
+		nyTimesNotices = append(nyTimesNotices, notice)
+
 	}
+
+	nytimes.mu.Lock()
+	*notices = append(*notices, nyTimesNotices...)
+	nytimes.mu.Unlock()
 
 	return nil
 }

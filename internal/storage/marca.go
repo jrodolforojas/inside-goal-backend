@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,14 +12,16 @@ type Marca struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewMarca() *Marca {
+func NewMarca(mu *sync.Mutex) *Marca {
 	return &Marca{
 		id:           int64(MARCA_ID),
 		name:         "Marca",
 		feedURL:      "https://e00-marca.uecdn.es/rss/futbol/futbol-internacional.xml",
 		defaultImage: "https://e00-marca.uecdn.es/assets/v27/img/destacadas/marca__logo-generica.jpg",
+		mu:           mu,
 	}
 }
 
@@ -25,6 +29,7 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(marca.feedURL)
 
+	marcaNotices := []models.Notice{}
 	for _, item := range feed.Items {
 
 		var author string
@@ -60,8 +65,12 @@ func (marca *Marca) GetNews(notices *[]models.Notice) error {
 			ProviderID:      marca.id,
 		}
 
-		*notices = append(*notices, notice)
+		marcaNotices = append(marcaNotices, notice)
 	}
+
+	marca.mu.Lock()
+	*notices = append(*notices, marcaNotices...)
+	marca.mu.Unlock()
 	return nil
 }
 

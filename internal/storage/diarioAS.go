@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,20 +12,24 @@ type DiarioASStorage struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewDiarioAS() *DiarioASStorage {
+func NewDiarioAS(mu *sync.Mutex) *DiarioASStorage {
 	return &DiarioASStorage{
 		id:           int64(DIARIOAS_ID),
 		name:         "Diario AS",
 		feedURL:      "https://feeds.as.com/mrss-s/pages/as/site/as.com/section/futbol/portada/",
 		defaultImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Diario_AS.svg/1200px-Diario_AS.svg.png",
+		mu:           mu,
 	}
 }
 
 func (diarioAS *DiarioASStorage) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(diarioAS.feedURL)
+
+	diarioASNotices := []models.Notice{}
 
 	for _, item := range feed.Items {
 		var author string
@@ -55,8 +61,12 @@ func (diarioAS *DiarioASStorage) GetNews(notices *[]models.Notice) error {
 			ProviderID:      diarioAS.id,
 		}
 
-		*notices = append(*notices, notice)
+		diarioASNotices = append(diarioASNotices, notice)
 	}
+
+	diarioAS.mu.Lock()
+	*notices = append(*notices, diarioASNotices...)
+	diarioAS.mu.Unlock()
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,14 +12,16 @@ type FoxSports struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewFoxSports() *FoxSports {
+func NewFoxSports(mu *sync.Mutex) *FoxSports {
 	return &FoxSports{
 		id:           int64(FOX_SPORTS_ID),
 		name:         "Fox Sports",
 		feedURL:      "https://api.foxsports.com/v2/content/optimized-rss?partnerKey=MB0Wehpmuj2lUhuRhQaafhBjAJqaPU244mlTDK1i&size=30&tags=fs/soccer,soccer/epl/league/1,soccer/mls/league/5,soccer/ucl/league/7,soccer/europa/league/8,soccer/wc/league/12,soccer/euro/league/13,soccer/wwc/league/14,soccer/nwsl/league/20,soccer/cwc/league/26,soccer/gold_cup/league/32,soccer/unl/league/67",
 		defaultImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Fox_Sports_logo1.svg/2560px-Fox_Sports_logo1.svg.png",
+		mu:           mu,
 	}
 }
 
@@ -25,6 +29,7 @@ func (foxSports *FoxSports) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(foxSports.feedURL)
 
+	foxSportsNotices := []models.Notice{}
 	for _, item := range feed.Items {
 
 		var categories []string
@@ -50,8 +55,13 @@ func (foxSports *FoxSports) GetNews(notices *[]models.Notice) error {
 			ProviderID:      foxSports.id,
 		}
 
-		*notices = append(*notices, notice)
+		foxSportsNotices = append(foxSportsNotices, notice)
+
 	}
+
+	foxSports.mu.Lock()
+	*notices = append(*notices, foxSportsNotices...)
+	foxSports.mu.Unlock()
 	return nil
 }
 

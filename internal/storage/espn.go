@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,14 +12,16 @@ type ESPNStorage struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewESPN() *ESPNStorage {
+func NewESPN(mu *sync.Mutex) *ESPNStorage {
 	return &ESPNStorage{
 		id:           int64(ESPN_ID),
 		name:         "ESPN",
 		feedURL:      "https://www.espn.com/espn/rss/soccer/news",
 		defaultImage: "https://media.wired.com/photos/5927404ccfe0d93c47432c13/master/pass/espn-logo.png",
+		mu:           mu,
 	}
 }
 
@@ -25,6 +29,7 @@ func (espn *ESPNStorage) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(espn.feedURL)
 
+	espnNotices := []models.Notice{}
 	for _, item := range feed.Items {
 
 		var media string
@@ -46,8 +51,13 @@ func (espn *ESPNStorage) GetNews(notices *[]models.Notice) error {
 			Description:     item.Description,
 			Media:           media,
 		}
-		*notices = append(*notices, notice)
+
+		espnNotices = append(espnNotices, notice)
 	}
+
+	espn.mu.Lock()
+	*notices = append(*notices, espnNotices...)
+	espn.mu.Unlock()
 
 	return nil
 }

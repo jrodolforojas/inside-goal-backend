@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"sync"
+
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/mmcdole/gofeed"
 )
@@ -10,20 +12,24 @@ type YahooSports struct {
 	name         string
 	feedURL      string
 	defaultImage string
+	mu           *sync.Mutex
 }
 
-func NewYahooSports() *YahooSports {
+func NewYahooSports(mu *sync.Mutex) *YahooSports {
 	return &YahooSports{
 		id:           int64(YAHOO_SPORTS_ID),
 		name:         "Yahoo Sports",
 		feedURL:      "https://sports.yahoo.com/soccer/rss/",
 		defaultImage: "https://1000marcas.net/wp-content/uploads/2020/01/Yahoo-logo-1.png",
+		mu:           mu,
 	}
 }
 
 func (yahooSports *YahooSports) GetNews(notices *[]models.Notice) error {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(yahooSports.feedURL)
+
+	yahooSportsNotices := []models.Notice{}
 
 	for _, item := range feed.Items {
 		var author string
@@ -45,8 +51,13 @@ func (yahooSports *YahooSports) GetNews(notices *[]models.Notice) error {
 			Media:           yahooSports.defaultImage,
 		}
 
-		*notices = append(*notices, notice)
+		yahooSportsNotices = append(yahooSportsNotices, notice)
+
 	}
+
+	yahooSports.mu.Lock()
+	*notices = append(*notices, yahooSportsNotices...)
+	yahooSports.mu.Unlock()
 	return nil
 }
 

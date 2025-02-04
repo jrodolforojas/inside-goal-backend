@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"sort"
+	"sync"
 
 	"github.com/jrodolforojas/inside-goal-backend/internal/models"
 	"github.com/jrodolforojas/inside-goal-backend/internal/storage"
@@ -20,95 +22,96 @@ const PROVIDERS = 7
 func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 	notices := []models.Notice{}
 
-	errc := make(chan error, PROVIDERS)
+	wg := sync.WaitGroup{}
+	mu := sync.Mutex{}
 
+	errMutex := sync.Mutex{}
+	var errors []error
+
+	wg.Add(1)
 	go func() {
-		espn := storage.NewESPN()
-		err := espn.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		espn := storage.NewESPN(&mu)
+		if err := espn.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		diarioAS := storage.NewDiarioAS()
-		err := diarioAS.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		diarioAS := storage.NewDiarioAS(&mu)
+		if err := diarioAS.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		marca := storage.NewMarca()
-		err := marca.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		marca := storage.NewMarca(&mu)
+		if err := marca.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		nyTimes := storage.NewNYTimes()
-		err := nyTimes.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		nyTimes := storage.NewNYTimes(&mu)
+		if err := nyTimes.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		foxSports := storage.NewFoxSports()
-		err := foxSports.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		foxSports := storage.NewFoxSports(&mu)
+		if err := foxSports.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		yahooSports := storage.NewYahooSports()
-		err := yahooSports.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		yahooSports := storage.NewYahooSports(&mu)
+		if err := yahooSports.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
+	wg.Add(1)
 	go func() {
-		ninetyMin := storage.NewNinetyMin()
-		err := ninetyMin.GetNews(&notices)
-		if err != nil {
-			errc <- err
-			return
+		defer wg.Done()
+		ninetyMin := storage.NewNinetyMin(&mu)
+		if err := ninetyMin.GetNews(&notices); err != nil {
+			errMutex.Lock()
+			errors = append(errors, err)
+			errMutex.Unlock()
 		}
-
-		errc <- nil
 	}()
 
-	var err error
-	for i := 0; i < PROVIDERS; i++ {
-		e := <-errc
-		if e != nil {
-			err = e
-		}
-	}
+	wg.Wait()
 
-	if err != nil {
-		return nil, err
+	if len(errors) > 0 {
+		fmt.Println("Errors occurred:")
+		for _, err := range errors {
+			fmt.Println(err)
+		}
 	}
 
 	// order the notices by date
@@ -116,39 +119,12 @@ func (feed *Feed) GetNews(ctx context.Context) ([]models.Notice, error) {
 		return notices[i].PublicationDate.After(notices[j].PublicationDate)
 	})
 
+	fmt.Printf("len notices: %v\n", len(notices))
+
 	return notices, nil
 }
 
 func (feed *Feed) GetProviders(ctx context.Context) ([]models.Provider, error) {
 	providers := []models.Provider{}
-
-	espn := storage.NewESPN()
-	espnProvider, _ := espn.GetProvider()
-	providers = append(providers, *espnProvider)
-
-	diarioAS := storage.NewDiarioAS()
-	diarioASProvider, _ := diarioAS.GetProvider()
-	providers = append(providers, *diarioASProvider)
-
-	marca := storage.NewMarca()
-	marcaProvider, _ := marca.GetProvider()
-	providers = append(providers, *marcaProvider)
-
-	nyTimes := storage.NewNYTimes()
-	nyTimesProvider, _ := nyTimes.GetProvider()
-	providers = append(providers, *nyTimesProvider)
-
-	foxsports := storage.NewFoxSports()
-	foxsportsProvider, _ := foxsports.GetProvider()
-	providers = append(providers, *foxsportsProvider)
-
-	yahooSports := storage.NewYahooSports()
-	yahooSportsProvider, _ := yahooSports.GetProvider()
-	providers = append(providers, *yahooSportsProvider)
-
-	ninetyMin := storage.NewNinetyMin()
-	ninetyMinProvider, _ := ninetyMin.GetProvider()
-	providers = append(providers, *ninetyMinProvider)
-
 	return providers, nil
 }
